@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using System.Web.Http;
 using Autofac;
-using Autofac.Integration.WebApi;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PlanetaryMotion.IOC
 {
@@ -22,9 +22,11 @@ namespace PlanetaryMotion.IOC
         /// <param name="config">The configuration.</param>
         protected override void OnCreateContainer<T>(ContainerBuilder builder, Assembly[] loadedAssemblies, T config)
         {
-            var httpConfiguration = config as HttpConfiguration;
-            Builder.RegisterApiControllers(loadedAssemblies).PropertiesAutowired();
-            Builder.RegisterWebApiFilterProvider(httpConfiguration);
+            //var httpConfiguration = config as HttpConfiguration;
+            //Builder.RegisterApiControllers(loadedAssemblies).PropertiesAutowired();
+            //Builder.RegisterWebApiFilterProvider(httpConfiguration);
+            var services = (IServiceCollection) config;
+            builder.Populate(services);
         }
 
         #endregion

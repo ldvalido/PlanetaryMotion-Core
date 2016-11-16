@@ -1,7 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using Autofac;
+using Microsoft.Extensions.DependencyModel;
 
 namespace PlanetaryMotion.IOC
 {
@@ -108,11 +110,18 @@ namespace PlanetaryMotion.IOC
         #endregion
 
         #region Private Methods        
+
+        private IEnumerable<RuntimeAssembly> GetAssemblies()
+            => DependencyContext.Default.RuntimeLibraries.Select(lib => lib.Assemblies);
         /// <summary>
         /// Gets the loaded assemblies.
         /// </summary>
         /// <returns></returns>
-        Assembly[] GetLoadedAssemblies () => AppDomain.CurrentDomain.GetAssemblies().Where(FilterDomainAssembly).ToArray();
+        RuntimeAssembly[] GetLoadedAssemblies()
+        {
+            var asm = GetAssemblies().Select(lib => lib.Assemblies);
+            return asm.Where(AssemblyPrefixName);
+        }
 
         /// <summary>
         /// Loads the assemblies.
